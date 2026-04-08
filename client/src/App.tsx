@@ -10,6 +10,10 @@ import AddTransaction from "./pages/AddTransaction";
 import History from "./pages/History";
 import Analysis from "./pages/Analysis";
 import Settings from "./pages/Settings";
+import Goals from "./pages/Goals";
+import Budget from "./pages/Budget";
+import Alerts from "./pages/Alerts";
+import EditTransaction from "./pages/EditTransaction";
 
 
 function Router() {
@@ -19,6 +23,10 @@ function Router() {
       <Route path="/add" component={AddTransaction} />
       <Route path="/history" component={History} />
       <Route path="/analysis" component={Analysis} />
+      <Route path="/goals" component={Goals} />
+      <Route path="/budget" component={Budget} />
+      <Route path="/alerts" component={Alerts} />
+      <Route path="/edit-transaction" component={EditTransaction} />
       <Route path="/settings" component={Settings} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

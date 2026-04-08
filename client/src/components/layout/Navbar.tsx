@@ -17,6 +17,12 @@ const navItems = [
   { id: 'settings', label: 'Config', icon: Settings, href: '/settings' },
 ];
 
+const moreItems = [
+  { id: 'goals', label: 'Metas', icon: 'Target', href: '/goals' },
+  { id: 'budget', label: 'Orçamento', icon: 'Wallet', href: '/budget' },
+  { id: 'alerts', label: 'Alertas', icon: 'Bell', href: '/alerts' },
+];
+
 export const Navbar: React.FC = () => {
   const [location] = useLocation();
 
