@@ -12,7 +12,8 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, Download } from 'lucide-react';
+import { exportTransactionsToCSV } from '@/lib/export';
 
 export default function History() {
   const { transactions, categories, deleteTransaction } = useFinancial();
@@ -125,6 +126,16 @@ export default function History() {
               className="w-full"
             >
               {sortOrder === 'desc' ? '↓ Decrescente' : '↑ Crescente'}
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => exportTransactionsToCSV(filteredTransactions, categories)}
+              className="w-full flex items-center gap-2"
+              disabled={filteredTransactions.length === 0}
+            >
+              <Download size={16} />
+              Exportar CSV
             </Button>
           </div>
         </div>

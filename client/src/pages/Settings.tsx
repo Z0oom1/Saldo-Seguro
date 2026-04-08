@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Moon, Sun, Trash2, Plus } from 'lucide-react';
+import { Moon, Sun, Trash2, Plus, Download, Upload } from 'lucide-react';
 import { storage } from '@/lib/storage';
 import { nanoid } from 'nanoid';
 
@@ -48,6 +48,43 @@ export default function Settings() {
       storage.clear();
       window.location.reload();
     }
+  };
+
+  const handleExportBackup = () => {
+    const data = storage.get();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `saldo_seguro_backup_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportBackup = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const data = JSON.parse(content);
+        
+        // Basic validation
+        if (!data.transactions || !data.categories) {
+          throw new Error('Formato de backup inválido');
+        }
+
+        if (window.confirm('Isso irá substituir todos os seus dados atuais. Deseja continuar?')) {
+          storage.set(data);
+          window.location.reload();
+        }
+      } catch (err) {
+        alert('Erro ao importar backup: ' + (err instanceof Error ? err.message : 'Arquivo inválido'));
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -172,12 +209,54 @@ export default function Settings() {
           )}
         </motion.section>
 
+        {/* Backup Section */}
+        <motion.section
+          className="card p-6 rounded-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Backup e Restauração</h3>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Exporte seus dados para um arquivo JSON ou restaure um backup anterior.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <Button
+                onClick={handleExportBackup}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Download size={18} />
+                Exportar Backup
+              </Button>
+              
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportBackup}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  id="import-backup"
+                />
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center gap-2"
+                >
+                  <Upload size={18} />
+                  Importar Backup
+                </Button>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
         {/* Danger Zone */}
         <motion.section
           className="card p-6 rounded-lg border border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-950/10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.3 }}
         >
           <h3 className="text-lg font-semibold mb-4 text-red-600">Zona de Perigo</h3>
           <div className="space-y-3">

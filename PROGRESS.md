@@ -1,8 +1,8 @@
 # Saldo Seguro - Relatório de Progresso
 
 **Data:** 08 de Abril de 2026  
-**Versão:** 0.2.0 - Metas, Orçamento e Alertas  
-**Status:** ✅ Fase 1-4 Completa
+**Versão:** 0.3.0 - Otimizações, PWA e Exportação  
+**Status:** 🟢 Fase 5 em andamento (Otimizações e Recursos Extras)
 
 ---
 
@@ -64,14 +64,14 @@ Continuação bem-sucedida do **Saldo Seguro** com implementação de recursos a
 ## 🚀 O que falta
 
 ### Fase 5: Otimizações e Testes
-- ⏳ **Performance**: Lazy loading de gráficos, memoização
+- ✅ **Performance**: Lazy loading de páginas implementado
 - ⏳ **Acessibilidade**: ARIA labels, keyboard navigation
-- ⏳ **PWA**: Service Workers, offline support
+- ✅ **PWA**: Suporte básico com Service Workers e Manifest
 - ⏳ **Testes**: Unit tests com Vitest, E2E com Playwright
 
 ### Fase 6: Recursos Extras
-- ⏳ **Exportação de Dados**: CSV, PDF com relatórios
-- ⏳ **Backup/Restore**: Importar e exportar dados
+- ✅ **Exportação de Dados**: CSV implementado na página de Histórico
+- ✅ **Backup/Restore**: Importar e exportar JSON nas Configurações
 - ⏳ **Compartilhamento**: Relatórios por email
 - ⏳ **Integração com APIs**: Cotação de moedas, previsão
 
@@ -81,13 +81,14 @@ Continuação bem-sucedida do **Saldo Seguro** com implementação de recursos a
 
 | Métrica | Valor |
 |---------|-------|
-| Arquivos criados | 26 |
-| Linhas de código | ~4.500 |
+| Arquivos criados | 28 |
+| Linhas de código | ~4.800 |
 | Componentes React | 13 |
 | Páginas | 8 |
 | Tipos TypeScript | 8 |
 | Hooks customizados | 1 |
 | Contextos | 1 |
+| Utilitários | 1 |
 
 ---
 
