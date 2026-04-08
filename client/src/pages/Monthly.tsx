@@ -9,7 +9,7 @@ import { useFinancial } from '@/contexts/FinancialContext';
 import { TransactionCard } from '@/components/ui/TransactionCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Calendar, ArrowUpCircle, ArrowDownCircle, Wallet } from 'lucide-react';
-import { formatCurrency } from '@/lib/financial';
+import { financial } from '@/lib/financial';
 
 export default function Monthly() {
   const { transactions, categories, deleteTransaction } = useFinancial();
@@ -96,7 +96,7 @@ export default function Monthly() {
                   <div className="flex items-center gap-4">
                     <div className="hidden sm:flex flex-col items-end">
                       <span className={`text-sm font-medium ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {formatCurrency(balance)}
+                        {financial.formatCurrency(balance)}
                       </span>
                     </div>
                     {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -116,18 +116,18 @@ export default function Monthly() {
                         <div className="flex flex-col items-center p-2 bg-green-50 dark:bg-green-900/10 rounded-lg">
                           <ArrowUpCircle size={16} className="text-green-600 mb-1" />
                           <span className="text-[10px] uppercase text-muted-foreground">Ganhos</span>
-                          <span className="text-sm font-bold text-green-600">{formatCurrency(month.income)}</span>
+                          <span className="text-sm font-bold text-green-600">{financial.formatCurrency(month.income)}</span>
                         </div>
                         <div className="flex flex-col items-center p-2 bg-red-50 dark:bg-red-900/10 rounded-lg">
                           <ArrowDownCircle size={16} className="text-red-600 mb-1" />
                           <span className="text-[10px] uppercase text-muted-foreground">Gastos</span>
-                          <span className="text-sm font-bold text-red-600">{formatCurrency(month.expense)}</span>
+                          <span className="text-sm font-bold text-red-600">{financial.formatCurrency(month.expense)}</span>
                         </div>
                         <div className="flex flex-col items-center p-2 bg-blue-50 dark:bg-blue-900/10 rounded-lg">
                           <Wallet size={16} className="text-blue-600 mb-1" />
                           <span className="text-[10px] uppercase text-muted-foreground">Saldo</span>
                           <span className={`text-sm font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                            {formatCurrency(balance)}
+                            {financial.formatCurrency(balance)}
                           </span>
                         </div>
                       </div>
