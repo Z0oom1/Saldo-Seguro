@@ -58,12 +58,22 @@ export interface FinancialAlert {
   relatedId?: string;
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  avatar?: string;
+}
+
 export interface FinancialData {
   transactions: Transaction[];
   categories: Category[];
   goals: FinancialGoal[];
   budgets: BudgetLimit[];
   alerts: FinancialAlert[];
+}
+
+export interface MultiUserData {
+  [userId: string]: FinancialData;
 }
 
 export interface DashboardStats {

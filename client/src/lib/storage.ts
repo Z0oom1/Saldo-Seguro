@@ -1,11 +1,12 @@
 /**
  * Saldo Seguro - LocalStorage Management
- * Handles all data persistence for the application
+ * Handles all data persistence for the application with multi-user support
  */
 
-import { FinancialData, Category, Transaction, FinancialGoal, BudgetLimit, FinancialAlert } from './types';
+import { FinancialData, Category, Transaction, FinancialGoal, BudgetLimit, FinancialAlert, MultiUserData } from './types';
 
-const STORAGE_KEY = 'saldo_seguro_data';
+const STORAGE_KEY = 'saldo_seguro_multi_user_data';
+const CURRENT_USER_KEY = 'saldo_seguro_current_user';
 
 // Default categories
 const DEFAULT_CATEGORIES: Category[] = [
@@ -27,38 +28,68 @@ const DEFAULT_CATEGORIES: Category[] = [
   { id: 'saida_educacao', name: 'Educação', type: 'saida', icon: '📚', color: '#EF4444', isCustom: false },
 ];
 
-// Initialize default data
-const DEFAULT_DATA: FinancialData = {
+// Initialize default data for a user
+const createDefaultData = (): FinancialData => ({
   transactions: [],
   categories: DEFAULT_CATEGORIES,
   goals: [],
   budgets: [],
   alerts: [],
-};
+});
 
 export const storage = {
-  // Get all data
-  getData: (): FinancialData => {
-    try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      if (!data) {
-        storage.setData(DEFAULT_DATA);
-        return DEFAULT_DATA;
-      }
-      return JSON.parse(data);
-    } catch (error) {
-      console.error('Error reading storage:', error);
-      return DEFAULT_DATA;
+  // User Management
+  getCurrentUser: (): string | null => {
+    return localStorage.getItem(CURRENT_USER_KEY);
+  },
+
+  setCurrentUser: (userId: string | null): void => {
+    if (userId) {
+      localStorage.setItem(CURRENT_USER_KEY, userId);
+    } else {
+      localStorage.removeItem(CURRENT_USER_KEY);
     }
   },
 
-  // Save all data
-  setData: (data: FinancialData): void => {
+  // Multi-user data management
+  getAllUsersData: (): MultiUserData => {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : {};
+    } catch (error) {
+      console.error('Error reading multi-user storage:', error);
+      return {};
+    }
+  },
+
+  setAllUsersData: (data: MultiUserData): void => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      console.error('Error saving storage:', error);
+      console.error('Error saving multi-user storage:', error);
     }
+  },
+
+  // Current user data
+  getData: (): FinancialData => {
+    const userId = storage.getCurrentUser();
+    if (!userId) return createDefaultData();
+
+    const allData = storage.getAllUsersData();
+    if (!allData[userId]) {
+      allData[userId] = createDefaultData();
+      storage.setAllUsersData(allData);
+    }
+    return allData[userId];
+  },
+
+  setData: (data: FinancialData): void => {
+    const userId = storage.getCurrentUser();
+    if (!userId) return;
+
+    const allData = storage.getAllUsersData();
+    allData[userId] = data;
+    storage.setAllUsersData(allData);
   },
 
   // Transactions
@@ -182,8 +213,19 @@ export const storage = {
     storage.setData(data);
   },
 
-  // Clear all data
+  // Clear all data for current user
   clear: (): void => {
-    localStorage.removeItem(STORAGE_KEY);
+    const userId = storage.getCurrentUser();
+    if (!userId) return;
+
+    const allData = storage.getAllUsersData();
+    delete allData[userId];
+    storage.setAllUsersData(allData);
   },
+
+  // Full reset
+  resetAll: (): void => {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(CURRENT_USER_KEY);
+  }
 };

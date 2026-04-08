@@ -6,28 +6,23 @@
 
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import { Home, Plus, History, TrendingUp, Settings } from 'lucide-react';
+import { Home, Plus, Calendar, History, TrendingUp, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, href: '/' },
+  { id: 'monthly', label: 'Mensal', icon: Calendar, href: '/monthly' },
   { id: 'add', label: 'Adicionar', icon: Plus, href: '/add' },
   { id: 'history', label: 'Histórico', icon: History, href: '/history' },
   { id: 'analysis', label: 'Análise', icon: TrendingUp, href: '/analysis' },
   { id: 'settings', label: 'Config', icon: Settings, href: '/settings' },
 ];
 
-const moreItems = [
-  { id: 'goals', label: 'Metas', icon: 'Target', href: '/goals' },
-  { id: 'budget', label: 'Orçamento', icon: 'Wallet', href: '/budget' },
-  { id: 'alerts', label: 'Alertas', icon: 'Bell', href: '/alerts' },
-];
-
 export const Navbar: React.FC = () => {
   const [location] = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg md:static md:border-t-0 md:border-r md:shadow-none md:flex md:flex-col md:w-20">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg md:static md:border-t-0 md:border-r md:shadow-none md:flex md:flex-col md:w-20 z-[9999]">
       <div className="flex md:flex-col justify-around items-center h-20 md:h-auto md:p-4 md:gap-4">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -36,7 +31,7 @@ export const Navbar: React.FC = () => {
           return (
             <Link key={item.id} href={item.href}>
               <motion.a
-                className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-smooth ${
+                className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg transition-smooth cursor-pointer ${
                   isActive
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
@@ -45,6 +40,7 @@ export const Navbar: React.FC = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Icon size={24} />
+                <span className="text-[10px] font-medium md:hidden">{item.label}</span>
                 <span className="text-xs font-medium hidden md:block">{item.label}</span>
               </motion.a>
             </Link>

@@ -12,9 +12,8 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Moon, Sun, Trash2, Plus, Download, Upload } from 'lucide-react';
+import { Moon, Sun, Trash2, Plus, Download, Upload, LogOut } from 'lucide-react';
 import { storage } from '@/lib/storage';
-import { nanoid } from 'nanoid';
 
 export default function Settings() {
   const { theme, toggleTheme } = useTheme();
@@ -44,14 +43,14 @@ export default function Settings() {
   };
 
   const handleClearData = () => {
-    if (window.confirm('Tem certeza? Todos os dados serão perdidos permanentemente.')) {
+    if (window.confirm('Tem certeza? Todos os dados deste perfil serão perdidos permanentemente.')) {
       storage.clear();
       window.location.reload();
     }
   };
 
   const handleExportBackup = () => {
-    const data = storage.get();
+    const data = storage.getData();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -77,7 +76,7 @@ export default function Settings() {
         }
 
         if (window.confirm('Isso irá substituir todos os seus dados atuais. Deseja continuar?')) {
-          storage.set(data);
+          storage.setData(data);
           window.location.reload();
         }
       } catch (err) {
@@ -87,18 +86,52 @@ export default function Settings() {
     reader.readAsText(file);
   };
 
+  const handleLogout = () => {
+    storage.setCurrentUser(null);
+    window.location.href = '/login';
+  };
+
   return (
     <Layout title="Configurações">
       <motion.div
-        className="max-w-2xl mx-auto space-y-8"
+        className="max-w-2xl mx-auto space-y-8 pb-24"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
+        {/* Profile Section */}
+        <motion.section
+          className="card p-6 rounded-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Perfil</h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                {storage.getCurrentUser() === 'caio' ? '👨‍💻' : '👩‍🎨'}
+              </div>
+              <div>
+                <p className="font-medium text-foreground capitalize">{storage.getCurrentUser()}</p>
+                <p className="text-sm text-muted-foreground">Perfil ativo no momento</p>
+              </div>
+            </div>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <LogOut size={18} />
+              Trocar Perfil
+            </Button>
+          </div>
+        </motion.section>
+
         {/* Theme Section */}
         <motion.section
           className="card p-6 rounded-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
         >
           <h3 className="text-lg font-semibold mb-4 text-foreground">Tema</h3>
           <div className="flex items-center justify-between">
@@ -127,7 +160,7 @@ export default function Settings() {
           className="card p-6 rounded-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.2 }}
         >
           <h3 className="text-lg font-semibold mb-4 text-foreground">Categorias Personalizadas</h3>
 
@@ -214,7 +247,7 @@ export default function Settings() {
           className="card p-6 rounded-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.3 }}
         >
           <h3 className="text-lg font-semibold mb-4 text-foreground">Backup e Restauração</h3>
           <div className="space-y-4">
@@ -256,7 +289,7 @@ export default function Settings() {
           className="card p-6 rounded-lg border border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-950/10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.4 }}
         >
           <h3 className="text-lg font-semibold mb-4 text-red-600">Zona de Perigo</h3>
           <div className="space-y-3">
@@ -269,7 +302,7 @@ export default function Settings() {
               className="w-full"
             >
               <Trash2 size={18} className="mr-2" />
-              Limpar Todos os Dados
+              Limpar Dados do Perfil
             </Button>
           </div>
         </motion.section>
@@ -279,11 +312,11 @@ export default function Settings() {
           className="card p-6 rounded-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.5 }}
         >
           <h3 className="text-lg font-semibold mb-4 text-foreground">Sobre</h3>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p><strong>Saldo Seguro</strong> v1.0.0</p>
+            <p><strong>Saldo Seguro</strong> v1.1.0</p>
             <p>Sistema de controle financeiro pessoal moderno e intuitivo.</p>
             <p>Todos os dados são armazenados localmente no seu dispositivo.</p>
           </div>
